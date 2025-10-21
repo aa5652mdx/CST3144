@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>EduNova — School Enrollment Portal</title>
+
+  <!-- Vue.js -->
+  <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <div id="app" class="universe">
+    <!-- HERO HEADER -->
+    <header class="hero">
+      <div class="orbital">
+        <i class="fa fa-graduation-cap spin"></i>
+      </div>
+      <h1 class="title">EduNova</h1>
+      <p class="subtitle">Explore. Enroll. Excel.</p>
+
+      <div class="searchbar">
+        <input type="text" v-model="searchTerm" placeholder="Search subjects, price, or location..." />
+        <button @click="searchTerm=''" title="Clear"><i class="fa fa-xmark"></i></button>
+      </div>
+
+      <div class="filters">
+        <div class="sortbox">
+          <select v-model="sortAttr">
+            <option value="subject">Subject</option>
+            <option value="location">Location</option>
+            <option value="price">Price</option>
+            <option value="spaces">Spaces</option>
+          </select>
+          <button class="flip" @click="toggleSortOrder">
+            <i class="fa" :class="sortAscending ? 'fa-arrow-up' : 'fa-arrow-down'"></i>
+          </button>
+        </div>
+        <button class="cartpulse" @click="toggleCart" :disabled="cartTotalItems===0">
+          <i class="fa fa-shopping-cart"></i>
+          <span v-if="cartTotalItems" class="pulse">{{ cartTotalItems }}</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- LESSON GRID -->
+    <main class="nebula" v-if="!cartVisible">
+      <div class="course-card" v-for="lesson in filteredAndSortedLessons" :key="lesson.id">
+        <div class="card-front">
+          <i :class="lesson.icon + ' card-icon'"></i>
+          <h2>{{ lesson.subject }}</h2>
+          <p class="desc">{{ lesson.description }}</p>
+        </div>
+        <div class="card-back">
+          <p><strong>Location:</strong> {{ lesson.location }}</p>
+          <p><strong>Price:</strong> £{{ lesson.price.toFixed(2) }}</p>
+          <p><strong>Spaces:</strong> {{ lesson.spaces }}</p>
+          <button class="btn add" :disabled="lesson.spaces===0" @click="addToCart(lesson)">
+            <i class="fa fa-cart-plus"></i> Add
+          </button>
+        </div>
+      </div>
+    </main>
+
+    <!-- CART PAGE -->
+    <section v-else class="cart-panel">
+      <h2>Enrollment Cart</h2>
+
+      <div v-if="cart.length===0" class="empty">
+        <p>No courses yet — go explore!</p>
+        <button class="btn" @click="toggleCart">Return</button>
+      </div>
+
+      <div v-else>
+        <table class="cart-table">
+          <thead>
+            <tr>
+              <th>Subject</th><th>Location</th><th>Price</th><th>Qty</th><th>Subtotal</th><th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="item in cart" :key="item.lessonId">
+              <td>{{ item.subject }}</td>
+              <td>{{ item.location }}</td>
+              <td>£{{ item.price }}</td>
+              <td>{{ item.qty }}</td>
+              <td>£{{ (item.price * item.qty).toFixed(2) }}</td>
+              <td><button class="btn small danger" @click="removeFromCart(item)">X</button></td>
+            </tr>
+          </tbody>
+        </table>
+
+        <p class="cart-total">Total: £{{ cartTotal.toFixed(2) }}</p>
+
+        <form class="checkout" @submit.prevent="checkout">
+          <label>
+            Name
+            <input type="text" v-model="checkoutName" placeholder="Letters only" />
+            <span class="error" v-if="checkoutName && !validName">Letters only</span>
+          </label>
+          <label>
+            Phone
+            <input type="text" v-model="checkoutPhone" placeholder="Numbers only" />
+            <span class="error" v-if="checkoutPhone && !validPhone">Numbers only</span>
+          </label>
+          <div class="checkout-actions">
+            <button class="btn primary" type="submit" :disabled="!checkoutEnabled">Confirm</button>
+            <button class="btn" type="button" @click="toggleCart">Back</button>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <!-- MESSAGE -->
+    <div v-if="message" class="message">
+      <p>{{ message }}</p>
+      <button class="btn" @click="message=''">Close</button>
+    </div>
+
+    <footer class="footer">
+      <small>EduNova &copy; 2025 — Designed uniquely for coursework excellence.</small>
+    </footer>
+  </div>
+
+  <!-- JS -->
+  <script src="../js/main.js"></script>
+</body>
+</html>
