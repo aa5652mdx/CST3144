@@ -245,7 +245,7 @@ body {
   background: var(--highlight);
   color: var(--space1);
   padding: 14px 20px;
-  border-radius: 12px;
+  border-radius: 11gpx;
   box-shadow: 0 0 10px var(--accent);
 }
 .footer {
