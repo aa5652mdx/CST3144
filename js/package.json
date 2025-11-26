@@ -1,7 +1,0 @@
-{
-  "dependencies": {
-    "node.js": "^0.0.1-security",
-    "package-lock.json": "^1.0.0",
-    "package.json": "^2.0.1"
-  }
-}

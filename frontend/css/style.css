@@ -1,0 +1,514 @@
+/* ========= UNIQUE UNIVERSE STYLING ========= */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+
+:root {
+  /* Color Palette */
+  --space1: #0b132b; /* Darkest Blue/Space Background */
+  --space2: #1c2541; /* Primary Card Background */
+  --space3: #3a506b; /* Secondary/Hero Background */
+  --highlight: #5bc0be; /* Aqua/Primary Action */
+  --accent: #f4d35e; /* Gold/Secondary Highlight */
+  --text: #fefefe; /* White/Light Text */
+  --danger: #ef476f; /* Red for warnings/removal */
+
+  /* New UI Vars */
+  --badge-color: #ff3366; /* Bright pink/red for notifications */
+  --shadow-glow: 0 0 15px rgba(91, 192, 190, 0.6); /* Aqua glow */
+}
+
+/* Global Reset and Body */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  /* Deep space gradient for a unique look */
+  background: radial-gradient(circle at 30% 30%, var(--space3), var(--space1));
+  color: var(--text);
+  font-family: 'Poppins', sans-serif;
+  overflow-x: hidden;
+  min-height: 100vh;
+}
+
+/* Typography */
+h1 {
+  font-weight: 700;
+  color: var(--accent);
+  margin-bottom: 0;
+  font-size: 2.5rem;
+}
+h2 {
+  font-weight: 600;
+  color: var(--highlight);
+  font-size: 1.5rem;
+  margin-top: 0;
+}
+p {
+  font-weight: 300;
+}
+
+/* Orbit animation for hero */
+.hero {
+  text-align: center;
+  padding: 40px 10px 20px;
+  position: relative;
+  background: rgba(0, 0, 0, 0.1);
+}
+.orbital {
+  position: absolute;
+  left: 50%;
+  top: 10px;
+  transform: translateX(-50%);
+}
+.spin {
+  font-size: 48px;
+  color: var(--accent);
+  animation: spin 6s linear infinite;
+}
+@keyframes spin {
+  from { transform: translateX(-50%) rotate(0deg); }
+  to { transform: translateX(-50%) rotate(360deg); }
+}
+
+/* Buttons and Inputs */
+.btn {
+  background: var(--highlight);
+  color: var(--space1);
+  border: none;
+  padding: 10px 15px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.2s ease;
+  text-transform: uppercase;
+  font-size: 0.9rem;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+}
+.btn:hover:not(:disabled) {
+  background: #7bd9d7;
+  transform: translateY(-2px);
+}
+.btn.primary {
+  background: var(--accent);
+  color: var(--space1);
+}
+.btn.primary:hover:not(:disabled) {
+  background: #f7e099;
+}
+.btn.danger {
+  background: var(--danger);
+  color: var(--text);
+  padding: 5px 8px;
+  font-size: 0.8rem;
+}
+.btn.danger:hover:not(:disabled) {
+  background: #e33e65;
+}
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+/* FLOATING CART BUTTON (Made bigger and more noticeable) */
+.floating-cart-btn {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  z-index: 1000;
+  
+  /* Appearance */
+  background: var(--highlight);
+  color: var(--space1);
+  border: none;
+  width: 70px; /* Increased size */
+  height: 70px; /* Increased size */
+  border-radius: 50%;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  box-shadow: var(--shadow-glow); /* Add aqua glow effect */
+  
+  /* Layout */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem; /* Increased icon size */
+  padding: 0; /* Override default button padding */
+  position: relative; /* For badge positioning */
+}
+.floating-cart-btn:hover:not(:disabled) {
+  background: var(--accent); /* Change color on hover */
+  transform: scale(1.1) rotate(5deg); /* Subtle animation */
+  box-shadow: 0 0 20px rgba(244, 211, 94, 0.8); /* Accent glow on hover */
+}
+.floating-cart-btn .cart-label {
+    /* Hide the text label on large screens, only icon visible */
+    display: none;
+}
+
+/* Cart Badge for Item Count */
+.cart-badge {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background-color: var(--badge-color);
+    color: var(--text);
+    border-radius: 50%;
+    padding: 3px 8px; /* Increased padding */
+    font-size: 0.8rem; /* Increased text size */
+    font-weight: 700;
+    line-height: 1.2;
+    box-shadow: 0 0 5px rgba(255, 51, 102, 0.8);
+    animation: pulse 1s infinite;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+}
+
+/* Responsive adjustment for the floating button (Show text label on mobile) */
+@media (max-width: 600px) {
+    .floating-cart-btn {
+        width: auto;
+        height: auto;
+        padding: 12px 18px; /* Bigger padding */
+        border-radius: 8px;
+        bottom: 15px;
+        right: 15px;
+        font-size: 1rem; /* Bigger font size */
+        gap: 5px;
+    }
+    .floating-cart-btn .cart-label {
+        display: inline; 
+        margin-left: 5px;
+    }
+    .floating-cart-btn:hover:not(:disabled) {
+        transform: scale(1.05); 
+        box-shadow: var(--shadow-glow); 
+    }
+    .cart-badge {
+        /* Move badge slightly for mobile button shape */
+        top: -8px; 
+        right: -8px;
+    }
+}
+
+
+/* Search Bar & Filters */
+.searchbar {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 20px;
+  max-width: 500px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.searchbar input {
+  flex-grow: 1;
+  padding: 10px 15px;
+  border-radius: 8px;
+  border: none;
+  background: rgba(255,255,255,0.1);
+  color: var(--text);
+  outline: none;
+  transition: border-color 0.3s;
+}
+.searchbar input:focus {
+    border: 1px solid var(--highlight);
+}
+.searchbar input::placeholder {
+  color: rgba(255,255,255,0.5);
+}
+.filters {
+  display: flex;
+  justify-content: center;
+  margin: 15px 0 30px;
+}
+.sortbox {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+.filters select {
+  padding: 10px;
+  border-radius: 8px;
+  border: none;
+  background: var(--space3);
+  color: var(--text);
+  cursor: pointer;
+}
+.btn.small {
+    padding: 8px 12px;
+}
+
+/* Lesson Grid (Horizontal Scroll Layout) */
+.lesson-grid {
+  /* Remove grid and enable flex for horizontal layout */
+  display: flex;
+  overflow-x: auto; /* Enable horizontal scrolling */
+  scroll-snap-type: x mandatory;
+  padding: 20px;
+  gap: 25px;
+  margin: 0; /* Remove auto margins to allow full-width scroll */
+  padding-bottom: 30px; /* Extra padding for scroll visibility */
+  
+  /* Custom scrollbar styling for a space theme */
+  scrollbar-color: var(--highlight) var(--space1);
+  scrollbar-width: thin;
+}
+
+/* Webkit scrollbar (Chrome, Safari) */
+.lesson-grid::-webkit-scrollbar {
+  height: 8px;
+}
+.lesson-grid::-webkit-scrollbar-track {
+  background: var(--space1);
+}
+.lesson-grid::-webkit-scrollbar-thumb {
+  background-color: var(--highlight);
+  border-radius: 10px;
+  border: 2px solid var(--space1);
+}
+
+
+/* CARD ENHANCEMENTS */
+.card {
+  /* Set fixed dimensions for horizontal layout */
+  flex: 0 0 300px; /* Do not grow, do not shrink, fix width at 300px */
+  scroll-snap-align: start; /* Snap to card start when scrolling */
+  
+  background: var(--space2);
+  border-radius: 15px;
+  padding: 20px;
+  text-align: center;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.4);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  border: 1px solid rgba(91, 192, 190, 0.2); /* Subtle border */
+  min-height: 380px; /* Ensure cards are uniform height */
+}
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 30px rgba(0,0,0,0.6), var(--shadow-glow);
+}
+.card-header {
+    margin-bottom: 15px;
+}
+.card-icon {
+  font-size: 2.5rem;
+  color: var(--accent);
+  margin-bottom: 10px;
+}
+.card-title {
+    font-size: 1.3rem;
+    margin: 5px 0 0;
+}
+.card-body {
+    flex-grow: 1;
+    text-align: left;
+    margin-bottom: 15px;
+}
+.card-detail {
+    margin: 5px 0;
+    font-size: 0.95rem;
+}
+.card-detail strong {
+    color: var(--highlight);
+    font-weight: 600;
+}
+.description {
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.8);
+    margin-top: 10px;
+}
+.spaces span {
+    display: inline-block;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-weight: 600;
+    margin-top: 10px;
+    background: rgba(91, 192, 190, 0.1);
+}
+.low-stock {
+  color: var(--accent);
+  border: 1px solid var(--accent);
+}
+.no-stock {
+  color: var(--danger);
+  border: 1px solid var(--danger);
+}
+.card-footer {
+    padding-top: 15px;
+    border-top: 1px dashed rgba(255, 255, 255, 0.1);
+}
+
+
+/* Cart Modal Overlay */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(5px);
+  z-index: 1050;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Cart Modal Box */
+.cart-modal {
+  background: var(--space2);
+  border-radius: 15px;
+  padding: 30px;
+  width: 90%;
+  max-width: 700px;
+  box-shadow: 0 0 40px rgba(0,0,0,0.7), var(--shadow-glow);
+  transform: scale(1);
+  transition: transform 0.3s ease-out;
+}
+
+.modal-title {
+    text-align: center;
+    border-bottom: 2px solid var(--highlight);
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+}
+
+/* Cart Table */
+.cart-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 15px;
+}
+.cart-table th, .cart-table td {
+  border-bottom: 1px solid rgba(255,255,255,0.2);
+  padding: 12px 8px;
+  text-align: left;
+}
+.cart-table th {
+    color: var(--highlight);
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+.cart-table tbody tr:last-child td {
+    border-bottom: none;
+}
+.cart-total {
+  margin-top: 20px;
+  text-align: right;
+  font-size: 1.6rem;
+  color: var(--accent);
+  font-weight: bold;
+}
+
+/* Checkout Form */
+.checkout {
+    background: var(--space3); /* Lighter background for form */
+    padding: 20px;
+    border-radius: 10px;
+    margin-top: 30px;
+}
+.checkout label {
+    display: block;
+    margin-bottom: 15px;
+    font-weight: 400;
+    color: var(--text);
+}
+.checkout input {
+  width: 100%;
+  padding: 10px;
+  margin-top: 5px;
+  border-radius: 6px;
+  border: 1px solid var(--space1);
+  background: rgba(0,0,0,0.4);
+  color: var(--text);
+  outline: none;
+  transition: border-color 0.3s;
+}
+.checkout input:focus {
+    border-color: var(--highlight);
+    box-shadow: 0 0 5px rgba(91, 192, 190, 0.4);
+}
+.checkout .error {
+    color: var(--danger);
+    font-size: 0.8rem;
+    display: block;
+    margin-top: 4px;
+}
+.checkout-actions {
+  display: flex;
+  gap: 15px;
+  justify-content: flex-end;
+  margin-top: 20px;
+}
+
+/* Empty States */
+.empty-cart, .empty-state {
+    text-align: center;
+    padding: 40px 0;
+    color: rgba(255, 255, 255, 0.7);
+}
+.empty-cart i, .empty-state i {
+    font-size: 3rem;
+    color: var(--highlight);
+    margin-bottom: 10px;
+}
+
+
+/* Messages and Loading */
+.message {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: var(--space3);
+  border: 2px solid var(--accent);
+  padding: 25px 35px;
+  border-radius: 15px;
+  box-shadow: 0 0 30px rgba(0,0,0,0.6);
+  z-index: 2000;
+  text-align: center;
+}
+.loading-state {
+    text-align: center;
+    padding: 50px;
+    color: var(--highlight);
+}
+.loading-state p {
+    margin-top: 10px;
+}
+.no-results {
+    /* For horizontal layout, this should span the container width */
+    width: 100%;
+    text-align: center;
+    padding: 30px;
+    font-size: 1.1rem;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+/* Footer */
+.footer {
+    text-align: center;
+    padding: 20px;
+    margin-top: 50px;
+    color: rgba(255, 255, 255, 0.5);
+}
+
+/* Mobile Responsiveness for Lesson Grid */
+@media (max-width: 768px) {
+    /* Ensure the cards are still scrollable but perhaps a bit smaller */
+    .card {
+        flex: 0 0 250px; 
+    }
+}
