@@ -3,19 +3,14 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>EduNova2 — School Enrollment Portal</title>
+  <title>EduNova — School Enrollment Portal</title>
 
-  <!-- Font Awesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
-  <!-- CSS Path: Confirmed correct -->
-  <link rel="stylesheet" href="../css/style.css">
-  
-  <!-- NOTE: The scripts are moved to the bottom of the body, which is best practice. -->
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <div id="app" class="universe">
-    <!-- HERO HEADER -->
     <header class="hero">
       <div class="orbital">
         <i class="fa fa-graduation-cap spin"></i>
@@ -24,36 +19,39 @@
       <p class="subtitle">Explore. Enroll. Excel.</p>
 
       <div class="searchbar">
-        <input type="text" v-model="searchTerm" placeholder="Search subjects, price, or location..." />
-        <button @click="searchTerm=''" title="Clear"><i class="fa fa-xmark"></i></button>
+        <input type="text" v-model="searchQuery" placeholder="Search subjects, price, or location..." />
+        <button @click="searchQuery=''" title="Clear"><i class="fa fa-xmark"></i></button>
       </div>
 
       <div class="filters">
         <div class="sortbox">
-          <select v-model="sortAttr">
-            <option value="subject">Subject</option>
-            <option value="price">Price</option>
-            <option value="location">Location</option>
-            <option value="spaces">Spaces</option>
+          <select v-model="sortOption">
+            <option value="subject-asc">Subject (A-Z)</option>
+            <option value="subject-desc">Subject (Z-A)</option>
+            <option value="price-asc">Price (Low-High)</option>
+            <option value="price-desc">Price (High-Low)</option>
+            <option value="location-asc">Location (A-Z)</option>
+            <option value="location-desc">Location (Z-A)</option>
+            <option value="spaces-asc">Spaces (Low-High)</option>
+            <option value="spaces-desc">Spaces (High-Low)</option>
           </select>
-          <button @click="toggleSortOrder" class="btn sort-btn" :title="sortAscending ? 'Sort Descending' : 'Sort Ascending'">
-            <i :class="['fa', sortAscending ? 'fa-arrow-up-wide-short' : 'fa-arrow-down-wide-short']"></i>
+          
+          <button @click="toggleSortOrder" class="btn sort-btn" :title="sortAscending ? 'Switch to Descending' : 'Switch to Ascending'">
+             <i :class="['fa', sortAscending ? 'fa-arrow-down-a-z' : 'fa-arrow-up-z-a']"></i>
           </button>
         </div>
       </div>
     </header>
 
-    <!-- LESSON CARDS (Vue content) -->
     <section class="lesson-grid">
-      <!-- The v-if is what Vue controls -->
-      <div v-if="filteredAndSortedLessons.length === 0" class="empty-state">
+      <div v-if="sortedLessons.length === 0" class="empty-state">
         <i class="fa fa-magnifying-glass-minus"></i>
         <p>No lessons match your search criteria or lessons are loading...</p>
       </div>
 
-      <div class="card" v-for="lesson in filteredAndSortedLessons" :key="lesson.id">
+      <div class="card" v-for="lesson in sortedLessons" :key="lesson._id">
         <div class="card-header">
-          <i :class="['card-icon', lesson.icon]"></i>
+          <i :class="['card-icon', 'fa', lesson.icon ? lesson.icon : 'fa-book']"></i>
           <h2 class="card-title">{{ lesson.subject }}</h2>
         </div>
         <div class="card-body">
@@ -74,15 +72,12 @@
       </div>
     </section>
 
-    <!-- FLOATING CART BUTTON -->
     <button class="floating-cart-btn" @click="toggleCart" :disabled="cartTotalItems === 0">
       <i class="fa fa-shopping-cart fa-lg"></i>
       <span class="cart-label">Cart</span>
-      <!-- Badge for item count - only visible when items > 0 -->
       <span v-if="cartTotalItems > 0" class="cart-badge">{{ cartTotalItems }}</span>
     </button>
 
-    <!-- CART MODAL (Vue content) -->
     <section v-if="cartVisible" class="modal-overlay">
       <div class="cart-modal">
         <h2 class="modal-title">Shopping Cart</h2>
@@ -115,36 +110,27 @@
           </tbody>
         </table>
 
-        <p class="cart-total">Total: £{{ cartTotal.toFixed(2) }}</p>
+        <p class="cart-total">Total: £{{ cartTotalPrice.toFixed(2) }}</p>
 
         <form class="checkout" @submit.prevent="checkout">
           <label>
             Name
             <input type="text" v-model="checkoutName" placeholder="Letters only" />
-            <span class="error" v-if="checkoutName && !validName">Letters only</span>
+            <span class="error" v-if="checkoutName && !validName">Letters only required</span>
           </label>
           <label>
             Phone
             <input type="text" v-model="checkoutPhone" placeholder="Numbers only" />
-            <span class="error" v-if="checkoutPhone && !validPhone">Numbers only</span>
+            <span class="error" v-if="checkoutPhone && !validPhone">Numbers only required</span>
           </label>
           <div class="checkout-actions">
-            <button class="btn primary" type="submit" :disabled="!checkoutEnabled">Confirm</button>
+            <button class="btn primary" type="submit" :disabled="!isCheckoutEnabled">Confirm</button>
             <button class="btn" type="button" @click="toggleCart">Back</button>
           </div>
         </form>
       </div>
     </section>
 
-    <!-- LESSON JSON VIEWER -->
-    <section class="json-viewer-container">
-        <button class="btn small" @click="toggleJsonVisible" title="Debug Tool">
-            <i class="fa fa-code"></i> {{ jsonVisible ? 'Hide Lesson JSON' : 'Show Lesson JSON' }}
-        </button>
-        <pre v-if="jsonVisible" class="json-output">{{ JSON.stringify(lessons, null, 2) }}</pre>
-    </section>
-
-    <!-- MESSAGE (Vue content) -->
     <div v-if="message" class="message">
       <p>{{ message }}</p>
       <button class="btn" @click="message=''">Close</button>
@@ -156,10 +142,7 @@
 
   </div>
   
-  <!-- SCRIPT FILES: This is the most critical block for the app to work -->
-  <!-- 1. Vue Library (MUST load first) -->
   <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
-  <!-- 2. Your Application Logic (MUST load second, uses '../js/main.js' path) -->
-  <script src="../js/main.js"></script> 
+  <script src="main.js"></script> 
 </body>
 </html>
