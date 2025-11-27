@@ -3,7 +3,7 @@ const { createApp } = Vue;
 createApp({
   data() {
     return {
-      // LINK TO YOUR LIVE RENDER BACKEND
+      // API_URL is used by fetchLessons.
       API_URL: 'https://backendnova.onrender.com', 
       
       lessons: [], 
@@ -24,27 +24,27 @@ createApp({
   },
   
   computed: {
-    // Calculates total price (Price * Qty)
-    cartTotalPrice() {
+    // 1. UPDATED: Specifically calculates PRICE (Price * Qty)
+    finalCartPrice() {
       return this.cart.reduce((total, item) => total + (item.price * item.qty), 0);
     },
     
-    // Computes the total number of items in the cart
-    cartTotalItems() {
+    // 2. UPDATED: Specifically calculates QUANTITY (just Qty)
+    totalItemCount() {
       return this.cart.reduce((total, item) => total + item.qty, 0);
     },
 
-    // Regex Validation for Name (Letters and spaces only)
+    // 3. Name Validation: Returns TRUE if letters/spaces only
     validName() {
       return /^[a-zA-Z\s]+$/.test(this.checkoutName);
     },
 
-    // Regex Validation for Phone (Numbers only)
+    // 4. Phone Validation: Returns TRUE if numbers only
     validPhone() {
       return /^\d+$/.test(this.checkoutPhone);
     },
 
-    // Logic to enable the checkout button
+    // 5. Checkout Button Enable Logic
     isCheckoutEnabled() {
       return this.validName && this.validPhone && this.cart.length > 0;
     },
@@ -63,9 +63,7 @@ createApp({
         let comparison = 0;
 
         if (key === 'subject' || key === 'location') {
-          if (typeof a[key] === 'string' && typeof b[key] === 'string') {
-            comparison = a[key].localeCompare(b[key]);
-          }
+          comparison = a[key].localeCompare(b[key]);
         } else if (key === 'price') {
           comparison = a.price - b.price;
         } else if (key === 'spaces') {
@@ -76,23 +74,31 @@ createApp({
       });
 
       return filtered;
+    },
+    
+    // Helper to flip the sort icon
+    sortAscending() {
+        return this.sortOption.endsWith('asc');
     }
   },
   
   methods: {
     // Fetches lesson data from the backend API
     async fetchLessons() {
+      this.message = "Loading lessons...";
       try {
         const response = await fetch(`${this.API_URL}/lessons`);
         if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
         const data = await response.json();
         this.lessons = data;
+        this.message = ""; 
       } catch (error) {
         console.error("Error fetching lessons:", error);
+        this.message = `ERROR: Failed to fetch lessons. Check API URL.`;
       }
     },
 
-    // Adds a lesson to the cart and updates its spaces locally
+    // Adds a lesson to the cart
     addToCart(lesson) {
       if (lesson.spaces > 0) {
         // Find the lesson in the cart
@@ -116,7 +122,7 @@ createApp({
       }
     },
 
-    // Removes an item from the cart and updates lesson spaces locally
+    // Removes an item from the cart
     removeFromCart(item) {
       const lesson = this.lessons.find(l => l._id === item.lessonId);
 
@@ -143,9 +149,11 @@ createApp({
             lessonId: item.lessonId, 
             qty: item.qty 
         })),
-        total: this.cartTotalPrice 
+        total: this.finalCartPrice 
       };
       
+      this.message = "Sending order to API...";
+
       try {
         const response = await fetch(`${this.API_URL}/orders`, {
           method: 'POST',
@@ -153,7 +161,13 @@ createApp({
           body: JSON.stringify(orderData)
         });
 
-        if (!response.ok) throw new Error('Order failed');
+        if (!response.ok) {
+          const errorText = await response.text();
+          throw new Error(`Order submission failed: ${errorText || response.statusText}`);
+        }
+
+        const result = await response.json();
+        console.log("Order submitted successfully:", result);
 
         this.message = "Order submitted successfully! Your booking is confirmed.";
         
@@ -167,14 +181,17 @@ createApp({
         this.fetchLessons(); 
 
       } catch (error) {
-        this.message = `ERROR: Checkout failed.`;
+        console.error("Checkout error:", error);
+        this.message = `ERROR: Checkout failed. Details: ${error.message}`;
       }
     },
     
+    // Toggles the visibility of the cart panel
     toggleCart() {
       this.cartVisible = !this.cartVisible;
     },
 
+    // Helper to toggle sort direction
     toggleSortOrder() {
        let [key, order] = this.sortOption.split('-');
        order = order === 'asc' ? 'desc' : 'asc';
@@ -182,7 +199,9 @@ createApp({
     }
   },
   
+  // Lifecycle hook to fetch lessons when the app starts
   mounted() {
     this.fetchLessons();
+    console.log("EduNova App Loaded v3");
   }
 }).mount('#app');
