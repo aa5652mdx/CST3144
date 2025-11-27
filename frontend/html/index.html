@@ -5,9 +5,9 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>EduNova - School Enrollment Portal</title>
 
-  <!-- External Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-  <link rel="stylesheet" href="style.css">
+  
+  <link rel="stylesheet" href="../css/style.css">
 </head>
 <body>
   <div id="app" class="universe">
@@ -72,14 +72,12 @@
       </div>
     </section>
 
-    <!-- Floating Cart Button -->
     <button class="floating-cart-btn" @click="toggleCart" :disabled="totalItemCount === 0">
       <i class="fa fa-shopping-cart fa-lg"></i>
       <span class="cart-label">Cart</span>
       <span v-if="totalItemCount > 0" class="cart-badge">{{ totalItemCount }}</span>
     </button>
 
-    <!-- Cart Modal -->
     <section v-if="cartVisible" class="modal-overlay">
       <div class="cart-modal">
         <h2 class="modal-title">Shopping Cart</h2>
@@ -112,7 +110,6 @@
           </tbody>
         </table>
 
-        <!-- UPDATED: Uses finalCartPrice to ensure it shows MONEY, not quantity -->
         <p class="cart-total">Total: £{{ finalCartPrice.toFixed(2) }}</p>
 
         <form class="checkout" @submit.prevent="checkout">
@@ -146,7 +143,6 @@
   </div>
   
   <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
-  <!-- UPDATED: Bumped version to v=3 to force browser reload -->
-  <script src="main.js?v=3"></script> 
+  <script src="../js/main.js?v=4"></script> 
 </body>
 </html>
