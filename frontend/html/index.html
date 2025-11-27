@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>EduNova — School Enrollment Portal</title>
+  <title>EduNova - School Enrollment Portal</title>
 
   <!-- External Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
@@ -73,10 +73,10 @@
     </section>
 
     <!-- Floating Cart Button -->
-    <button class="floating-cart-btn" @click="toggleCart" :disabled="cartCount === 0">
+    <button class="floating-cart-btn" @click="toggleCart" :disabled="totalItemCount === 0">
       <i class="fa fa-shopping-cart fa-lg"></i>
       <span class="cart-label">Cart</span>
-      <span v-if="cartCount > 0" class="cart-badge">{{ cartCount }}</span>
+      <span v-if="totalItemCount > 0" class="cart-badge">{{ totalItemCount }}</span>
     </button>
 
     <!-- Cart Modal -->
@@ -112,8 +112,8 @@
           </tbody>
         </table>
 
-        <!-- This will now display the Price, not the Quantity -->
-        <p class="cart-total">Total: £{{ cartTotal.toFixed(2) }}</p>
+        <!-- UPDATED: Uses finalCartPrice to ensure it shows MONEY, not quantity -->
+        <p class="cart-total">Total: £{{ finalCartPrice.toFixed(2) }}</p>
 
         <form class="checkout" @submit.prevent="checkout">
           <label>
@@ -146,7 +146,7 @@
   </div>
   
   <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
-  <!-- Added ?v=2 to force browser to load the new file -->
-  <script src="main.js?v=2"></script> 
+  <!-- UPDATED: Bumped version to v=3 to force browser reload -->
+  <script src="main.js?v=3"></script> 
 </body>
 </html>
